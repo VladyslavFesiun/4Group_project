@@ -1,5 +1,5 @@
 from collections import UserDict, UserList
-
+import re
 
 class Field:
     def __init__(self, value):
@@ -12,10 +12,21 @@ class Name(Field):
     pass    
 
 class Phone(Field):
-    pass
+     
+    @Field.value.setter
+    def value(self, value):
+        if not re.match(r'^\+\d{12}$', value):
+            raise ValueError("Incorrect phone number format, should be +380638108107.")
+        if not value.isnumeric():
+            raise ValueError('Invalid phone number format.')
+        self._value = value
 
 class Email(Field):
-    pass
+    @Field.value.setter
+    def value(self, value):
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
+            raise ValueError("Invalid email format.")
+        self._value = value
 
 class Address(Field):
     pass
