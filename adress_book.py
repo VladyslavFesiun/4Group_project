@@ -93,13 +93,17 @@ def main():
         input_divided = split_req(input_your_command)
         split_command = handle_requirement(input_your_command)
 
+        result_for_search_note = "".join(input_your_command[0:11])
         note_text = " ".join(input_divided[1::])
         note_text_search=  " ".join(input_divided[2::])
 
         print(note_text)
         print(note_text_search)
 
-        if split_command in all_commands:
+        if result_for_search_note in all_commands:
+            all_commands[result_for_search_note]()
+            
+        elif split_command in all_commands:
             all_commands[split_command]()
             
         elif input_your_command() in all_commands:
