@@ -45,6 +45,7 @@ class Address(Field):
 class Birthday(Field):
     pass
 
+'''___________________________________________________________________________________________'''
 
 class Record:
     
@@ -53,41 +54,100 @@ class Record:
         self.phones = []
         self.emails = []
         self.addresses = []
-        self.birthdays = []
+        self.birthday = None
 
-    def __str__(self):                  #представлення даних у виглядів рядка
-        
-        phones_str = ';'.join(str(p) for p in self.phones)
-        emails_str = ';'.join(str(e) for e in self.phones)
-        addresses_str = ';'.join(str(a) for a in self.phones)
-        birthdays_str = ';'.join(str(b) for b in self.phones)
+    def add_phone(self, phone):
+        # Додавання телефону до контакту
+        self.phones.append(Phone(phone))
 
-        return f'Contact name: {self.name.value}, phones'  f'Contact name: {self.name.value}, phones: {phones_str},  '\
-               f'emails: {emails_str}, addresses: {addresses_str}, birthdays: {birthdays_str}'                           
-        
+    def add_email(self, email):
+        # Додавання електронної адреси до контакту
+        self.emails.append(Email(email))
+
+    def add_address(self, address):
+        # Додавання адреси до контакту
+        self.addresses.append(Address(address))
+
+    def add_birthday(self, birthday):
+        # Додавання дня народження до контакту
+        self.birthday = birthday
+
+    def __str__(self):
+        # Перетворення об'єкта контакту в рядок
+        phones_str = '; '.join(str(p) for p in self.phones)
+        emails_str = '; '.join(str(e) for e in self.emails)
+        addresses_str = '; '.join(str(a) for a in self.addresses)
+
+        return f"Contact name: {self.name.value}, phones: {phones_str}, " \
+               f"emails: {emails_str}, addresses: {addresses_str}, birthday: {self.birthday}"
+
 
 class AddressBook(UserDict):
+
+    def user_input(self, input_text):
+        # Розділення тексту на частини
+        parts = input_text.split()
+        command = parts[0].lower            # зчитуємо першу команду (нижній регістр)
+
+        if command == 'add':
+            #Розпідзнавання підкоманди: phone, email, address, birthday
+            sub_command = parts[1].lower()
+            if sub_command == 'phone':
+                self.add_phone_to_contact(parts[2:])        # відсікаємо службові команди add phone
+            elif sub_command == 'email':
+                self.add_email_to_contact(parts[2:])        # відсікаємо службові команди add e-mail
+            elif sub_command == 'address':
+                self.add_address_to_contact(parts[2:])      # відсікаємо службові команди add address
+            elif sub_command == 'birthday':
+                self.add_birthday_to_contact(parts[2:])     # відсікаємо службові команди add birthday
+            else:
+                print("Uncorrect sub-command. Valid sub-commands: phone, email, address, birthday")
+
+
+    def add_phone_to_contact(self, input_parts):                            # Додаємо телефон
+        # Отримання імені та телефону з тексту
+        contact_name, phone = input_parts[0], ' '.join(input_parts[1:])
+        contact = self.find_contact_by_name(contact_name)
+        if contact:
+            # Додавання телефону до контакту
+            contact.add_phone(phone)
+        else:
+            print(f"Contact with name '{contact_name}' not found.")
+
+    def add_email_to_contact(self, input_parts):                             # Додаємо email
+        # Отримання імені та мейлу з тексту
+        contact_name, email = input_parts[0], ' '.join(input_parts[1:])
+        contact = self.find_contact_by_name(contact_name)
+        if contact:
+            # Додавання електронної адреси до контакту
+            contact.add_email(email)
+        else:
+            print(f"Contact with name '{contact_name}' not found.")
+
+    def add_address_to_contact(self, input_parts):                              # Додаємо адресу
+        # Вилучення імені та адреси з частин введеного тексту
+        contact_name, address = input_parts[0], ' '.join(input_parts[1:])
+        contact = self.find_contact_by_name(contact_name)
+        if contact:
+            # Додавання адреси до контакту
+            contact.add_address(address)
+        else:
+            print(f"Contact with name '{contact_name}' not found.")
+
+    def add_birthday_to_contact(self, input_parts):                             # Додаємо день народження
+        # Вилучення імені та дня народження з частин введеного тексту
+        contact_name, birthday = input_parts[0], ' '.join(input_parts[1:])
+        contact = self.find_contact_by_name(contact_name)
+        if contact:
+            # Додавання дня народження до контакту
+            contact.add_birthday(birthday)
+        else:
+            print(f"Contact with name '{contact_name}' not found.")
     
-    def add_contact(self, contact):
-    
-    # Додаємо новий контакт до книги адрес
-        self.data[contact.name.value] = contact
+    def find_contact_by_name(self, contact_name):                               # Пошук контакту    
+        return self.data.get(contact_name)
 
-    def search_contact(self, search_item):
-
-        # Пошук контакту за рядком пошуку у всіх полях
-        found_contacts = []
-
-        for contact in self.data.values():
-            if (
-                search_item.lower() in contact.name.value.lower() or
-                any(search_item.lower() in str(phone).lower() for phone in contact.phones) or
-                any(search_item.lower() in str(email).lower() for email in contact.emails) or
-                any(search_item.lower() in str(address).lower() for address in contact.addresses) or
-                any(search_item.lower() in str(birthday).lower() for birthday in contact.birthdays)
-            ):
-                found_contacts.append(contact)
-        return found_contacts
+    '''___________________________________________________________________________________________'''
 
     def save_addressbook(self):
         with open("addressbook.bin", "wb") as f:
