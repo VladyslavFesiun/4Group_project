@@ -249,8 +249,7 @@ def main():
             if input_your_command.lower().startswith(i):
                 command = i
                 text_after_command = input_your_command.lower().removeprefix(i).strip()
-        command = " ".join(input_your_command.split(" ")[0:2])
-        print(command)
+        command_to_check_for_dif = " ".join(input_your_command.split(" ")[0:2])
 
         # print(f"Your command is: {command}")
         # print(f'Text after command is: {text_after_command}')
@@ -262,7 +261,7 @@ def main():
         elif command in all_commands:
             all_commands[command]()
         else:
-            most_similar_command = difflib.get_close_matches(command, commands, n=1)
+            most_similar_command = difflib.get_close_matches(command_to_check_for_dif, commands, n=1)
             print(f"Invalid command. Print 'info' to see list of commands. "
                   f"The most similar to command: '{command}' is: '{most_similar_command[0]}'")
 
