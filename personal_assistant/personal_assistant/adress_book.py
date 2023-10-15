@@ -1,6 +1,7 @@
 from collections import UserDict
 import pickle
 import re
+import difflib
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 
@@ -243,12 +244,13 @@ def main():
 
         # input_your_command = input(f'Enter your command: ')
         input_your_command = prompt('Enter your command: ', completer=command_completer)
-        
-    
+
         for i in all_commands.keys():
             if input_your_command.lower().startswith(i):
                 command = i
                 text_after_command = input_your_command.lower().removeprefix(i).strip()
+        command = " ".join(input_your_command.split(" ")[0:2])
+        print(command)
 
         # print(f"Your command is: {command}")
         # print(f'Text after command is: {text_after_command}')
@@ -260,7 +262,9 @@ def main():
         elif command in all_commands:
             all_commands[command]()
         else:
-            print("Invalid command. Print 'info' to see list of commands")
+            most_similar_command = difflib.get_close_matches(command, commands, n=1)
+            print(f"Invalid command. Print 'info' to see list of commands. "
+                  f"The most similar to command: '{command}' is: '{most_similar_command[0]}'")
 
 
 if __name__ == '__main__':
