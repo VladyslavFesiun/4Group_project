@@ -17,12 +17,24 @@ class Field:
     def value(self, new_value):
         self._value = new_value 
 
+
 class Name(Field):
-    pass
-    pass
-    pass
+    # Ініціалізація об'єкта Name
+    def __init__(self, value):
+       super().__init__(value)
+
+    def __str__(self):
+        return str(self.value)
+
 
 class Phone(Field):
+    # Ініціалізація об'єкта Phone
+    def __init__(self, value):
+        super().__init__(value)
+
+    def __str__(self):
+        return str(self.value)
+
      
     @Field.value.setter
     def value(self, value):
@@ -33,28 +45,47 @@ class Phone(Field):
         self._value = value
 
 class Email(Field):
+    # Ініціалізація об'єкта Email
+    def __init__(self, value):
+        super().__init__(value)
+
+    def __str__(self):
+        return str(self.value)
+
     @Field.value.setter
     def value(self, value):
         if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
             raise ValueError("Invalid email format.")
         self._value = value
 
+
 class Address(Field):
-    pass
+    # Ініціалізація об'єкта Address
+    def __init__(self, value):
+        super().__init__(value)
+
+    def __str__(self):
+        return str(self.value)
+
 
 class Birthday(Field):
-    pass
+    # Ініціалізація об'єкта Birthday
+    def __init__(self, value):
+        super().__init__(value)
+
+    def __str__(self):
+       return str(self.value)
 
 '''___________________________________________________________________________________________'''
 
 class Record:
     
-    def __init__(self, name):
+    def __init__(self, name, birthday=None):
         self.name = Name(name)
         self.phones = []
         self.emails = []
         self.addresses = []
-        self.birthday = None
+        self.birthday = birthday
 
     def add_phone(self, phone):
         # Додавання телефону до контакту
@@ -104,45 +135,107 @@ class AddressBook(UserDict):
     #             print("Uncorrect sub-command. Valid sub-commands: phone, email, address, birthday")
 
 
-    def add_phone_to_contact(self, input_parts):                            # Додаємо телефон
-        # Отримання імені та телефону з тексту
-        contact_name, phone = input_parts[0], ' '.join(input_parts[1:])
-        contact = self.find_contact_by_name(contact_name)
-        if contact:
-            # Додавання телефону до контакту
-            contact.add_phone(phone)
+    def add_contact(self, text):
+        # Додавання контакту
+        if len(text) >= 2:
+            new_contact = Record(text)
+            self.data[new_contact.name] = new_contact
         else:
-            print(f"Contact with name '{contact_name}' not found.")
+            print("Name of contact is not correct!")
 
-    def add_email_to_contact(self, input_parts):                             # Додаємо email
-        # Отримання імені та мейлу з тексту
-        contact_name, email = input_parts[0], ' '.join(input_parts[1:])
-        contact = self.find_contact_by_name(contact_name)
-        if contact:
-            # Додавання електронної адреси до контакту
-            contact.add_email(email)
-        else:
-            print(f"Contact with name '{contact_name}' not found.")
 
-    def add_address_to_contact(self, input_parts):                              # Додаємо адресу
-        # Вилучення імені та адреси з частин введеного тексту
-        contact_name, address = input_parts[0], ' '.join(input_parts[1:])
-        contact = self.find_contact_by_name(contact_name)
-        if contact:
-            # Додавання адреси до контакту
-            contact.add_address(address)
-        else:
-            print(f"Contact with name '{contact_name}' not found.")
+    def add_phone_to_contact(self, text):
+        # Звернення йде шляхом вводу імені контакту і номера телефону
+        # Якщо після введеня імені не буде вказаний номер телефону то вийде відповідне повідомлення.
+        name_input = text.split(" ")[0]
+        phone_to_add = Phone(int(text.removeprefix(name_input).strip()))
+        print(phone_to_add)
+        if len(name_input) >= 2 and len(phone_to_add) >= 0:
+            for key, value in self.data.items():
+                if key == name_input:
+                    if phone_to_add not in self.data[name_input].phones:
+                        return self.data[name_input].phones.append(phone_to_add)
+                    else:
+                        print(f"This phone is already entered for this addressbook!")
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(phone_to_add) == 0:
+            print("No phone number!")
 
-    def add_birthday_to_contact(self, input_parts):                             # Додаємо день народження
-        # Вилучення імені та дня народження з частин введеного тексту
-        contact_name, birthday = input_parts[0], ' '.join(input_parts[1:])
-        contact = self.find_contact_by_name(contact_name)
-        if contact:
-            # Додавання дня народження до контакту
-            contact.add_birthday(birthday)
-        else:
-            print(f"Contact with name '{contact_name}' not found.")
+
+    def add_email_to_contact(self, text):
+        # Звернення йде шляхом вводу імені контакту і мейлу
+        # Якщо після введеня імені не буде вказаний мейл то вийде відповідне повідомлення.
+        name_input = text.split(" ")[0]
+        email_to_add = Email(int(text.removeprefix(name_input).strip()))
+        print(email_to_add)
+        if len(name_input) >= 2 and len(email_to_add) >= 5:
+            for key, value in self.data.items():
+                if key == name_input:
+                    if email_to_add not in self.data[name_input].emails:
+                        return self.data[name_input].emails.append(email_to_add)
+                    else:
+                        print(f"This email is already entered for this addressbook!")
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(email_to_add) == 0:
+            print("No email!")
+
+
+    def add_address_to_contact(self, text):
+        # Звернення йде шляхом вводу імені контакту і адреси
+        # Якщо після введеня імені не буде вказана адреса то вийде відповідне повідомлення.
+        name_input = text.split(" ")[0]
+        address_to_add = Address(int(text.removeprefix(name_input).strip()))
+        print(address_to_add)
+        if len(name_input) >= 2 and len(address_to_add) >= 5:
+            for key, value in self.data.items():
+                if key == name_input:
+                    if address_to_add not in self.data[name_input].addresses:
+                        return self.data[name_input].addresses.append(address_to_add)
+                    else:
+                        print(f"This address is already entered for this addressbook!")
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(address_to_add) == 0:
+            print("No address!")
+
+
+    def add_birthday_to_contact(self, text):
+        # Звернення йде шляхом вводу імені контакту і дня народження
+        # Якщо після введеня імені не буде вказаний день народження то вийде відповідне повідомлення.
+        name_input = text.split(" ")[0]
+        birthday_to_add = Address(int(text.removeprefix(name_input).strip()))
+        print(birthday_to_add)
+        if len(name_input) >= 2 and len(birthday_to_add) >= 10:
+            for key, value in self.data.items():
+                if key == name_input:
+                    if birthday_to_add not in self.data[name_input].birthday:
+                        return self.data[name_input].addresses.append(birthday_to_add)
+                    # else:
+                    #     print(f"This address is already entered for this addressbook!")
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(birthday_to_add) == 0:
+            print("No birthday date!")
+
+    
+
+    
+
+    # def add_birthday_to_contact(self, input_parts):                             
+    #     # Вилучення імені та дня народження з частин введеного тексту
+    #     contact_name, birthday = input_parts[0], ' '.join(input_parts[1:])
+    #     contact = self.find_contact_by_name(contact_name)
+    #     if contact:
+    #         # Додавання дня народження до контакту
+    #         contact.add_birthday(birthday)
+    #     else:
+    #         print(f"Contact with name '{contact_name}' not found.")
     
     def find_contact_by_name(self, contact_name):                               # Пошук контакту    
         return self.data.get(contact_name)
@@ -284,7 +377,7 @@ def main():
             # AddressBook commands
             "save addressbook": contact_book.save_addressbook(),
             "load addressbook": lambda: contact_book.load_notebook(text_after_command),
-            "add contact": lambda: contact_book.add_phone_to_contact(text_after_command),
+            "add contact": lambda: contact_book.add_contact(text_after_command),
             "add phone": lambda: contact_book.add_phone_to_contact(text_after_command),
             "add email": lambda: contact_book.add_email_to_contact(text_after_command),
             "add birthday": lambda: contact_book.add_birthday_to_contact(text_after_command),
