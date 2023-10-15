@@ -1,6 +1,8 @@
 from collections import UserDict
 import pickle
 import re
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import WordCompleter
 
 class Field:
     def __init__(self, value):
@@ -108,6 +110,17 @@ class NoteBook(UserDict):
             self.__id += 1
         else:
             print("Note is empty!")
+    
+    def search_notes(self, search_match):
+        if len(search_match) >= 1:
+            # print(self.data['note-1'])
+            res = "Note "
+            for value in self.data.values():
+                # print(type(str(value)))
+                # print(str(value))
+                if (search_match in str(value)):
+                    res += str(value) + ""
+                    print(f'{res} is found')
 
     def add_tag(self, text):
         # Звернення йде шляхом вводу імені нотатки і введення тегу для цієї нотатки.
@@ -175,14 +188,7 @@ class Notes():
             return f'{self.note}'
         else:
             return f'{self.note} | Tags are: {self.tags}'
-
-# def search_notes(list_of_notes, search_match):
-#     res = "Notes: \n"
-#     for i in list_of_notes:
-#         if (search_match in i["note"]):
-#             res += str(i) + "\n"
-#     return res
-
+        
 
 def main():
     try:
@@ -197,11 +203,11 @@ def main():
     except FileNotFoundError:
         list_of_notes = NoteBook()
 
-    def search_note_func():
-        if len(text_after_command) > 1:
-            print(search_notes(list_of_notes, text_after_command))
-        else:
-            print("You haven`t entered text to search.")
+    # def search_note_func():
+    #     if len(text_after_command) > 1:
+    #         print(search_notes(list_of_notes, text_after_command))
+    #     else:
+    #         print("You haven`t entered text to search.")
 
     all_commands = {
             # General commands
@@ -219,7 +225,7 @@ def main():
             "add tag": lambda: list_of_notes.add_tag(text_after_command),
             "delete note": lambda: list_of_notes.delete_note(text_after_command),
             "edit note": lambda: list_of_notes.edit_note(text_after_command),
-            "search note": search_note_func,
+            "search note": lambda: list_of_notes.search_notes(text_after_command),
             "save notebook": list_of_notes.save_notebook,
             "load notebook": lambda: list_of_notes.load_notebook(text_after_command),
             "show notebook": list_of_notes.show_notebook,
@@ -227,13 +233,18 @@ def main():
         }
     
     while True:
+        commands = list(all_commands.keys())
+        command_completer = WordCompleter(commands)
+
         closing_words = ["good bye", "close", "exit"]
 
         command = ""
         text_after_command = ""
 
-        input_your_command = input(f'Enter your command: ')
-
+        # input_your_command = input(f'Enter your command: ')
+        input_your_command = prompt('Enter your command: ', completer=command_completer)
+        
+    
         for i in all_commands.keys():
             if input_your_command.lower().startswith(i):
                 command = i
