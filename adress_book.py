@@ -1,4 +1,5 @@
-from collections import UserDict, UserList
+from collections import UserDict
+import pickle
 import re
 
 class Field:
@@ -84,17 +85,27 @@ class AddressBook(UserDict):
             ):
                 found_contacts.append(contact)
         return found_contacts
+
+    def save_addressbook(self):
+        with open("addressbook.bin", "wb") as f:
+            pickle.dump(self.data, f)
+
+    def load_notebook(self, file):
+        with open(file, "rb") as f:
+            self.data = pickle.load(f)
     
 
 class NoteBook(UserDict):
     # Потрібно для створення унікального неймінгу кожної нотатки
-    i = 1
+    def __init__(self):
+        super().__init__()
+        self.__id = 1
 
     def add_note(self, notes):
         # Додавання нотатки в записник
         if len(notes) >= 1:
-            self.data[f"note-{self.i}"] = Notes(notes)
-            self.i += 1
+            self.data[f"note-{self.__id}"] = Notes(notes)
+            self.__id += 1
         else:
             print("Note is empty!")
 
@@ -140,6 +151,16 @@ class NoteBook(UserDict):
         else:
             print("Enter name of note to delete")
 
+    def save_notebook(self):
+        with open("notebook.bin", "wb") as f:
+            pickle.dump((self.data, self.__id), f)
+
+    def load_notebook(self, file):
+        with open(file, "rb") as f:
+            info_from_file = pickle.load(f)
+            self.data = info_from_file[0]
+            self.__id = info_from_file[1]
+
     def show_notebook(self):
         for name, note in self.data.items():
             print(f"{name}: {note}")
@@ -164,8 +185,17 @@ class Notes():
 
 
 def main():
+    try:
+        contact_book = AddressBook()
+        contact_book.load_notebook("addressbook.bin")
+    except FileNotFoundError:
+        contact_book = AddressBook()
 
-    list_of_notes = NoteBook()
+    try:
+        list_of_notes = NoteBook()
+        list_of_notes.load_notebook("notebook.bin")
+    except FileNotFoundError:
+        list_of_notes = NoteBook()
 
     def search_note_func():
         if len(text_after_command) > 1:
@@ -175,18 +205,23 @@ def main():
 
     all_commands = {
             # General commands
+            "hello": lambda: print("Hi! To get commands list print 'info'."),
+            "hi": lambda: print("Hi! To get commands list print 'info'."),
             "good bye": lambda: print("Good bye!"),
             "close": lambda: print("Good bye!"),
             "exit": lambda: print("Good bye!"),
             "info": lambda: print(''.join(f"Command list:"), [key for key in all_commands]),
             # AddressBook commands
-
+            "save addressbook": contact_book.save_addressbook(),
+            "load addressbook": lambda: contact_book.load_notebook(text_after_command),
             # NoteBook commands
             "add note": lambda: list_of_notes.add_note(text_after_command),
             "add tag": lambda: list_of_notes.add_tag(text_after_command),
             "delete note": lambda: list_of_notes.delete_note(text_after_command),
             "edit note": lambda: list_of_notes.edit_note(text_after_command),
             "search note": search_note_func,
+            "save notebook": list_of_notes.save_notebook,
+            "load notebook": lambda: list_of_notes.load_notebook(text_after_command),
             "show notebook": list_of_notes.show_notebook,
             "show notebooks": lambda: print(list_of_notes)
         }
@@ -204,10 +239,11 @@ def main():
                 command = i
                 text_after_command = input_your_command.lower().removeprefix(i).strip()
 
-        print(f"Your command is: {command}")
-        print(f'Text after command is: {text_after_command}')
+        # print(f"Your command is: {command}")
+        # print(f'Text after command is: {text_after_command}')
 
         if command in closing_words:
+            list_of_notes.save_notebook()
             all_commands[command]()
             break
         elif command in all_commands:
