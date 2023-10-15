@@ -84,24 +84,24 @@ class Record:
 
 class AddressBook(UserDict):
 
-    def user_input(self, input_text):
-        # Розділення тексту на частини
-        parts = input_text.split()
-        command = parts[0].lower            # зчитуємо першу команду (нижній регістр)
-
-        if command == 'add':
-            #Розпідзнавання підкоманди: phone, email, address, birthday
-            sub_command = parts[1].lower()
-            if sub_command == 'phone':
-                self.add_phone_to_contact(parts[2:])        # відсікаємо службові команди add phone
-            elif sub_command == 'email':
-                self.add_email_to_contact(parts[2:])        # відсікаємо службові команди add e-mail
-            elif sub_command == 'address':
-                self.add_address_to_contact(parts[2:])      # відсікаємо службові команди add address
-            elif sub_command == 'birthday':
-                self.add_birthday_to_contact(parts[2:])     # відсікаємо службові команди add birthday
-            else:
-                print("Uncorrect sub-command. Valid sub-commands: phone, email, address, birthday")
+    # def user_input(self, input_text):
+    #     # Розділення тексту на частини
+    #     parts = input_text.split()
+    #     command = parts[0].lower            # зчитуємо першу команду (нижній регістр)
+    #
+    #     if command == 'add':
+    #         #Розпідзнавання підкоманди: phone, email, address, birthday
+    #         sub_command = parts[1].lower()
+    #         if sub_command == 'phone':
+    #             self.add_phone_to_contact(parts[2:])        # відсікаємо службові команди add phone
+    #         elif sub_command == 'email':
+    #             self.add_email_to_contact(parts[2:])        # відсікаємо службові команди add e-mail
+    #         elif sub_command == 'address':
+    #             self.add_address_to_contact(parts[2:])      # відсікаємо службові команди add address
+    #         elif sub_command == 'birthday':
+    #             self.add_birthday_to_contact(parts[2:])     # відсікаємо службові команди add birthday
+    #         else:
+    #             print("Uncorrect sub-command. Valid sub-commands: phone, email, address, birthday")
 
 
     def add_phone_to_contact(self, input_parts):                            # Додаємо телефон
@@ -156,7 +156,10 @@ class AddressBook(UserDict):
     def load_notebook(self, file):
         with open(file, "rb") as f:
             self.data = pickle.load(f)
-    
+
+    def show_addressbook(self):
+        for name, contact in self.data.items():
+            print(f"{name}: {contact}")
 
 class NoteBook(UserDict):
     # Потрібно для створення унікального неймінгу кожної нотатки
@@ -175,13 +178,13 @@ class NoteBook(UserDict):
     def search_notes(self, search_match):
         if len(search_match) >= 1:
             # print(self.data['note-1'])
-            res = "Note "
+            res = ""
             for value in self.data.values():
                 # print(type(str(value)))
                 # print(str(value))
                 if (search_match in str(value)):
                     res += str(value) + ""
-                    print(f'{res} is found')
+                    print(f'Note "{res}" is found')
 
     def add_tag(self, text):
         # Звернення йде шляхом вводу імені нотатки і введення тегу для цієї нотатки.
@@ -281,6 +284,16 @@ def main():
             # AddressBook commands
             "save addressbook": contact_book.save_addressbook(),
             "load addressbook": lambda: contact_book.load_notebook(text_after_command),
+            "add contact": lambda: contact_book.add_phone_to_contact(text_after_command),
+            "add phone": lambda: contact_book.add_phone_to_contact(text_after_command),
+            "add email": lambda: contact_book.add_email_to_contact(text_after_command),
+            "add birthday": lambda: contact_book.add_birthday_to_contact(text_after_command),
+            "edit phone": lambda: contact_book.add_birthday_to_contact(text_after_command),
+            "edit birthday": lambda: contact_book.add_birthday_to_contact(text_after_command),
+            "edit email": lambda: contact_book.add_birthday_to_contact(text_after_command),
+            "delete contact": lambda: contact_book.add_birthday_to_contact(text_after_command),
+            "show addressbook": lambda: contact_book.show_addressbook,
+            "show birthdays": lambda: contact_book.add_birthday_to_contact(text_after_command),
             # NoteBook commands
             "add note": lambda: list_of_notes.add_note(text_after_command),
             "add tag": lambda: list_of_notes.add_tag(text_after_command),
@@ -322,8 +335,10 @@ def main():
             all_commands[command]()
         else:
             most_similar_command = difflib.get_close_matches(command_to_check_for_dif, commands, n=1)
-            print(f"Invalid command. Print 'info' to see list of commands. "
-                  f"The most similar to command: '{command}' is: '{most_similar_command[0]}'")
+            print(f"Invalid command. Print 'info' to see list of commands.\n"
+                  f"The most similar to command: '{command_to_check_for_dif}' is: '{most_similar_command[0]}'") \
+                if (len(most_similar_command) > 0) \
+                else (print(f"Invalid command. Print 'info' to see list of commands. "))
 
 
 if __name__ == '__main__':
