@@ -14,7 +14,9 @@ class Field:
         self._value = new_value 
 
 class Name(Field):
-    pass    
+    pass
+    pass
+    pass
 
 class Phone(Field):
      
@@ -84,94 +86,135 @@ class AddressBook(UserDict):
         return found_contacts
     
 
-class NoteBook(UserList):
-    def add_record(self, notes):
-        self.data.append(notes)
+class NoteBook(UserDict):
+    # Потрібно для створення унікального неймінгу кожної нотатки
+    i = 1
+
+    def add_note(self, notes):
+        # Додавання нотатки в записник
+        if len(notes) >= 1:
+            self.data[f"note-{self.i}"] = Notes(notes)
+            self.i += 1
+        else:
+            print("Note is empty!")
+
+    def add_tag(self, text):
+        # Звернення йде шляхом вводу імені нотатки і введення тегу для цієї нотатки.
+        # Якщо після введеня імені нотатки не буде вказаний тег, функція поверне відповідне повідомлення.
+        name_of_note = text.split(" ")[0]
+        tag_to_add = text.removeprefix(name_of_note).strip()
+        print(tag_to_add)
+        if len(name_of_note) >= 1 and len(tag_to_add) >= 1:
+            for key, value in self.data.items():
+                if key == name_of_note:
+                    if tag_to_add not in self.data[name_of_note].tags:
+                        return self.data[name_of_note].tags.append(tag_to_add)
+                    else:
+                        print(f"This tag is already entered for this note!")
+            return print(f"{name_of_note} was not found in NoteBook")
+        elif len(name_of_note) == 0:
+            print("Enter name of note to add tag!")
+        elif len(tag_to_add) == 0:
+            print("Tag is empty!")
+
+    def edit_note(self, text):
+        name_of_note = text.split(" ")[0]
+        new_note_text = text.removeprefix(name_of_note).strip()
+        if len(name_of_note) >= 1 and len(new_note_text) >= 1:
+            for key, value in self.data.items():
+                if key == name_of_note:
+                    self.data[name_of_note].note = new_note_text
+                    return print(f'{name_of_note} edited!')
+            return print(f"{new_note_text} was not found in NoteBook")
+        elif len(name_of_note) == 0:
+            print(f'Enter name of note to edit!')
+        elif len(new_note_text) == 0:
+            print(f"Enter new text for {name_of_note}")
+
+    def delete_note(self, note_name):
+        if len(note_name) >= 1:
+            for key, value in self.data.items():
+                if key == note_name:
+                    return self.data.pop(note_name)
+            return print(f"{note_name} was not found in NoteBook")
+        else:
+            print("Enter name of note to delete")
+
+    def show_notebook(self):
+        for name, note in self.data.items():
+            print(f"{name}: {note}")
 
 class Notes():
-    #dict_of_notes = NoteBook()
     def __init__(self, note):
         self.note = note
+        self.tags = []
 
-def save_note(list_of_notes, note:Notes):
-    dict_of_notes = dict()
-    dict_of_notes["note"] = note.note
-    print(dict_of_notes)
-    list_of_notes.append(dict_of_notes)
-    print (f"Note '{note.note}' has been added.")
-
-def add_note(list_of_notes, note):
-    print(note)
-    new_note = Notes(note)
-    save_note(list_of_notes, new_note)
-
-def search_notes(list_of_notes, search_match):
-    res = "Notes: \n"
-    for i in list_of_notes:
-        if (search_match in i["note"]):
-            res += str(i) + "\n"
-    return res
-
-def handle_requirement(req):
-    split_command = ''
-    for char in req:
-        if char != ' ':
-            split_command += char.lower()
+    def __str__(self):
+        if len(self.tags) == 0:
+            return f'{self.note}'
         else:
-            break
-    return split_command
+            return f'{self.note} | Tags are: {self.tags}'
 
-def split_req(req):
-    return req.split(maxsplit=3)
+# def search_notes(list_of_notes, search_match):
+#     res = "Notes: \n"
+#     for i in list_of_notes:
+#         if (search_match in i["note"]):
+#             res += str(i) + "\n"
+#     return res
+
 
 def main():
 
     list_of_notes = NoteBook()
 
-    def add_note_func():
-        if len(input_divided) > 1: 
-            add_note(list_of_notes, note_text)
-        else:
-            print("write note.")
-        
-
     def search_note_func():
-        if len(input_divided) > 1: 
-            print(search_notes(list_of_notes, note_text_search))
+        if len(text_after_command) > 1:
+            print(search_notes(list_of_notes, text_after_command))
         else:
-            print("write note.")
+            print("You haven`t entered text to search.")
 
     all_commands = {
-            "note": add_note_func,
+            # General commands
+            "good bye": lambda: print("Good bye!"),
+            "close": lambda: print("Good bye!"),
+            "exit": lambda: print("Good bye!"),
+            "info": lambda: print(''.join(f"Command list:"), [key for key in all_commands]),
+            # AddressBook commands
+
+            # NoteBook commands
+            "add note": lambda: list_of_notes.add_note(text_after_command),
+            "add tag": lambda: list_of_notes.add_tag(text_after_command),
+            "delete note": lambda: list_of_notes.delete_note(text_after_command),
+            "edit note": lambda: list_of_notes.edit_note(text_after_command),
             "search note": search_note_func,
+            "show notebook": list_of_notes.show_notebook,
+            "show notebooks": lambda: print(list_of_notes)
         }
     
     while True:
+        closing_words = ["good bye", "close", "exit"]
 
-        input_your_command = input(f'Write your command: ')
-        input_divided = split_req(input_your_command)
-        split_command = handle_requirement(input_your_command)
+        command = ""
+        text_after_command = ""
 
-        result_for_search_note = "".join(input_your_command[0:11])
-        note_text = " ".join(input_divided[1::])
-        note_text_search=  " ".join(input_divided[2::])
+        input_your_command = input(f'Enter your command: ')
 
-        print(note_text)
-        print(note_text_search)
+        for i in all_commands.keys():
+            if input_your_command.lower().startswith(i):
+                command = i
+                text_after_command = input_your_command.lower().removeprefix(i).strip()
 
-        if result_for_search_note in all_commands:
-            all_commands[result_for_search_note]()
-            
-        elif split_command in all_commands:
-            all_commands[split_command]()
-            
-        elif input_your_command() in all_commands:
-            all_commands[input_your_command.lower()]()
-            
+        print(f"Your command is: {command}")
+        print(f'Text after command is: {text_after_command}')
+
+        if command in closing_words:
+            all_commands[command]()
+            break
+        elif command in all_commands:
+            all_commands[command]()
         else:
-            print("Invalid command. Use 'hello', 'add', 'change', 'phone', 'show all', 'good bye', 'close', or 'exit'")
+            print("Invalid command. Print 'info' to see list of commands")
 
-        
 
 if __name__ == '__main__':
     main()
