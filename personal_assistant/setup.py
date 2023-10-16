@@ -11,6 +11,6 @@ setup(name='personal_assistant',
       install_requires=['numpy', 'Pillow', 'prompt_toolkit'],
       entry_points={'console_scripts': ['create-books = personal_assistant.adress_book:main',
                                         'clean-folder = personal_assistant.sorter:sort_files',
-                                        'fill-files = personal_assistant.generator:file_generator']
+                                        'fill-files = personal_assistant.generator:file_generator', ]
                     },
 )
