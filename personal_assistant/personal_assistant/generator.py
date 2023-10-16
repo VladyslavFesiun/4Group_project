@@ -67,5 +67,4 @@ def file_generator(path):
 
 
 if __name__ == '__main__':
-    parent_folder_path = Path("Temp")
-    file_generator(parent_folder_path)
+    file_generator(Path("Temp"))
