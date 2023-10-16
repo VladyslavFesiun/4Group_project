@@ -1,4 +1,5 @@
 from collections import UserDict
+from datetime import datetime
 import pickle
 import re
 import difflib
@@ -75,7 +76,15 @@ class Birthday(Field):
 
     def __str__(self):
         return str(self.value)
-
+    
+    @Field.value.setter
+    def value(self, value):
+        # Валідація формату дати
+        try:
+            datetime.strptime(value, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError("Incorrect birthday format, should be YYYY-MM-DD.")
+        self._value = value
 
 class Record:
     
@@ -239,6 +248,20 @@ class NoteBook(UserDict):
                 if (search_match in str(value)):
                     res += str(value) + ""
                     print(f'Note "{res}" is found')
+    
+    def search_notes_by_tag(self, tag):
+        found_notes = []
+        for name, note in self.data.items():
+            if tag in note.tags:
+                found_notes.append((name, note))
+        if found_notes:
+            print("Notes found:")
+            for name, note in found_notes:
+                print(f"{name}: {note}")
+        else:
+            print("No notes found for the tag.")
+        print
+        return found_notes
 
     def add_tag(self, text):
         # Звернення йде шляхом вводу імені нотатки і введення тегу для цієї нотатки.
@@ -350,6 +373,7 @@ def main():
             "delete note": lambda: list_of_notes.delete_note(text_after_command),
             "edit note": lambda: list_of_notes.edit_note(text_after_command),
             "search note": lambda: list_of_notes.search_notes(text_after_command),
+            "search tag":lambda: list_of_notes.search_notes_by_tag(text_after_command),
             "save notebook": list_of_notes.save_notebook,
             "load notebook": lambda: list_of_notes.load_notebook(text_after_command),
             "show notebook": list_of_notes.show_notebook,
