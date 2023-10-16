@@ -198,7 +198,7 @@ class AddressBook(UserDict):
             for key, value in self.data.items():
                 if key == name_input:
                     if self.data[name_input].birthday.value is None:
-                        self.data[name_input].birthday.value = Birthday(birthday_to_add)
+                        self.data[name_input].birthday = Birthday(birthday_to_add)
                         return
                     else:
                         return print(f"Birthday for this contact is already set. Use 'edit' func")
@@ -208,25 +208,28 @@ class AddressBook(UserDict):
         elif len(birthday_to_add) == 0:
             print("No birthday date!")
 
-    def find_contact_by_name(self, contact_name):                               # Пошук контакту    
+    def find_contact_by_name(self, contact_name): # Пошук контакту
         return self.data.get(contact_name)
 
-    def search_matches_in_addressbook(self, match):                              # Шукаємо збіги в адресній книзі  
+    def search_matches_in_addressbook(self, match): # Шукаємо збіги в адресній книзі
         found_matches = []
 
         for name, contact in self.data.items():
             list_of_phones = list(i.value.lower() for i in self.data[name].phones)
             list_of_emails = list(i.value.lower() for i in self.data[name].emails)
             list_of_addresses = list(i.value.lower() for i in self.data[name].addresses)
-            
-            if match in list_of_phones or match in list_of_emails or match in list_of_addresses:
+
+            if any(match in phone for phone in list_of_phones)\
+                    or any(match in email for email in list_of_emails)\
+                    or any(match in address for address in list_of_addresses):
                 if contact not in found_matches:
                     found_matches.append(contact)
 
             if match == contact.birthday.value:
-                print(f'Contact {name} has birthday {match}') 
+                print(f'Contact {name} has birthday {match}')
 
-        return found_matches
+        for contact in found_matches:
+            print(f"{contact}")
             
     def save_addressbook(self):
         with open("addressbook.bin", "wb") as f:
