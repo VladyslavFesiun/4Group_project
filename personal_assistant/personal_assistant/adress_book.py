@@ -211,6 +211,23 @@ class AddressBook(UserDict):
     def find_contact_by_name(self, contact_name):                               # Пошук контакту    
         return self.data.get(contact_name)
 
+    def search_matches_in_addressbook(self, match):                              # Шукаємо збіги в адресній книзі  
+        found_matches = []
+
+        for name, contact in self.data.items():
+            list_of_phones = list(i.value.lower() for i in self.data[name].phones)
+            list_of_emails = list(i.value.lower() for i in self.data[name].emails)
+            list_of_addresses = list(i.value.lower() for i in self.data[name].addresses)
+            
+            if match in list_of_phones or match in list_of_emails or match in list_of_addresses:
+                if contact not in found_matches:
+                    found_matches.append(contact)
+
+            if match == contact.birthday.value:
+                print(f'Contact {name} has birthday {match}') 
+
+        return found_matches
+            
     def save_addressbook(self):
         with open("addressbook.bin", "wb") as f:
             pickle.dump(self.data, f)
@@ -367,6 +384,8 @@ def main():
             "show addressbook": lambda: contact_book.show_addressbook(),
             "show addressbooks": lambda: print(contact_book),
             "show birthdays": lambda: contact_book.add_birthday_to_contact(text_after_command),
+            "find contact": lambda: contact_book.find_contact_by_name(text_after_command),
+            "find matches": lambda: contact_book.search_matches_in_addressbook(text_after_command),
             # NoteBook commands
             "add note": lambda: list_of_notes.add_note(text_after_command),
             "add tag": lambda: list_of_notes.add_tag(text_after_command),
