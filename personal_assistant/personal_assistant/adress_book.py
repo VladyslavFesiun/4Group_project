@@ -485,8 +485,8 @@ class NoteBook(UserDict):
                 # print(type(str(value)))
                 # print(str(value))
                 if search_match in str(value):
-                    res += str(value) + ""
-                    print(f'Note "{res}" is found')
+                    res += str(value) + " "
+                    print(f'Note "{search_match}" in "{(str(value).split(" ")[0][0].upper() + str(value).split(" ")[0][1:] + str(value)[len(str(value).split(" ")[0]):])}" was found')
     
     def search_notes_by_tag(self, tag):
         found_notes = []
@@ -559,7 +559,7 @@ class NoteBook(UserDict):
 
     def show_notebook(self):
         for name, note in self.data.items():
-            print(f"{name}: {note}")
+            print(f"{name}: {(str(note).split(' ')[0][0].upper() + str(note).split(' ')[0][1:] + str(note)[len(str(note).split(' ')[0]):])}")
 
 
 class Notes:
