@@ -132,7 +132,7 @@ class AddressBook(UserDict):
                 print(f'Contact {new_contact.name.value} is already in AddressBook')
         else:
             print("Name of contact is not correct!")
-
+    
     def add_phone_to_contact(self, text):
         # Звернення йде шляхом вводу імені контакту і номера телефону
         # Якщо після введеня імені не буде вказаний номер телефону то вийде відповідне повідомлення.
@@ -143,7 +143,7 @@ class AddressBook(UserDict):
                 if key == name_input:
                     phone_to_add_new = Phone(phone_to_add)
                     phone_to_add_new.value = phone_to_add
-                    if phone_to_add not in list(i.value.lower() for i in self.data[name_input].phones):
+                    if phone_to_add_new.value not in list(i.value.lower() for i in self.data[name_input].phones):
                         return self.data[name_input].phones.append(Phone(phone_to_add_new.value))
                     else:
                         return print(f"This phone is already entered for this addressbook!")
