@@ -221,7 +221,7 @@ class AddressBook(UserDict):
         if len(name_input) >= 2 and len(birthday_to_add) >= 10:
             for key, value in self.data.items():
                 if key == name_input:
-                    if self.data[name_input].birthday.value is None:
+                    if self.data[name_input].birthday is None:
                         self.data[name_input].birthday = Birthday(birthday_to_add)
                         return
                     else:
