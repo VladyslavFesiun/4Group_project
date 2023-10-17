@@ -245,6 +245,172 @@ class AddressBook(UserDict):
 
         for contact in found_matches:
             print(f"{contact}")
+
+    def edit_phone(self, text):
+        name_input = text.split(" ")[0].title()
+        phone_old = text.split(" ")[1]
+        phone_new = text.split(" ")[2]
+        if len(name_input) >= 2 and len(phone_old) >= 1 and len(phone_new) >= 1:
+            for key, value in self.data.items():
+                if key == name_input:
+                    list_of_phones = list(i.value.lower() for i in self.data[name_input].phones)
+                    for phone in list_of_phones:
+                        if phone == phone_old:
+                            index = list_of_phones.index(phone)
+                            self.data[name_input].phones[index].value = phone_new
+                            return
+                    return print(f"Phone number '{phone_old}' wasn't found")
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(phone_old) == 0:
+            print("No old phone number!")
+        elif len(phone_new) == 0:
+            print("No new phone number!")
+
+    def edit_email(self, text):
+        name_input = text.split(" ")[0].title()
+        email_old = text.split(" ")[1]
+        email_new = text.split(" ")[2]
+        if len(name_input) >= 2 and len(email_old) >= 5 and len(email_new) >= 5:
+            for key, value in self.data.items():
+                if key == name_input:
+                    list_of_emails = list(i.value.lower() for i in self.data[name_input].emails)
+                    for email in list_of_emails:
+                        if email == email_old:
+                            index = list_of_emails.index(email)
+                            self.data[name_input].emails[index].value = email_new
+                            return
+                    return print(f"Email '{email_old}' wasn't found")
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(email_old) == 0:
+            print("No old email!")
+        elif len(email_new) == 0:
+            print("No new email!")
+
+    def edit_address(self, text):
+        name_input = text.split(" ")[0].title()
+        address_old = text.split(" ")[1]
+        address_new = text.split(" ")[2]
+        if len(name_input) >= 2 and len(address_old) >= 5 and len(address_new) >= 5:
+            for key, value in self.data.items():
+                if key == name_input:
+                    list_of_addresses = list(i.value.lower() for i in self.data[name_input].addresses)
+                    for address in list_of_addresses:
+                        if address == address_old:
+                            index = list_of_addresses.index(address)
+                            self.data[name_input].addresses[index].value = address_new
+                            return
+                    return print(f"Address '{address_old}' wasn't found")
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(address_old) == 0:
+            print("No one old address!")
+        elif len(address_new) == 0:
+            print("No one new address!")
+
+    def edit_birthday(self, text):
+        name_input = text.split(" ")[0].title()
+        birthday_new = text.split(" ")[1]
+        if len(name_input) >= 1 and len(birthday_new) >= 1:
+            for key, value in self.data.items():
+                if key == name_input:
+                    self.data[name_input].birthday.value = birthday_new
+                    return
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(birthday_new) == 0:
+            print("No new birthday date!")
+
+    def delete_contact(self, contact):
+        if len(contact) >= 1:
+            for key, value in self.data.items():
+                if key == contact.title():
+                    return self.data.pop(contact.title())
+            return print(f"{contact} was not found in AddressBook")
+        else:
+            print("Enter name of contact to delete")
+
+    def delete_phone(self, text):
+        try:
+            name_input = text.split(" ")[0].title()
+            phone_to_delete = text.split(" ")[1]
+            if len(name_input) >= 1 and len(phone_to_delete) >= 1:
+                for key, value in self.data.items():
+                    if key == name_input:
+                        list_of_phones = list(i.value.lower() for i in self.data[name_input].phones)
+                        for phone in list_of_phones:
+                            if phone == phone_to_delete:
+                                index = list_of_phones.index(phone)
+                                del self.data[name_input].phones[index]
+                                return
+                        return print(f"Phone number '{phone_to_delete}' wasn't found")
+                return print(f"{name_input} was not found in addressbook")
+            elif len(name_input) == 0:
+                print("Enter name of contact!")
+            elif len(phone_to_delete) == 0:
+                print("No new phone number!")
+        except IndexError:
+            print(f"You didn't enter a value!")
+
+    def delete_email(self, text):
+        try:
+            name_input = text.split(" ")[0].title()
+            email_to_delete = text.split(" ")[1]
+            if len(name_input) >= 1 and len(email_to_delete) >= 1:
+                for key, value in self.data.items():
+                    if key == name_input:
+                        list_of_emails = list(i.value.lower() for i in self.data[name_input].emails)
+                        for email in list_of_emails:
+                            if email == email_to_delete:
+                                index = list_of_emails.index(email)
+                                del self.data[name_input].emails[index]
+                                return
+                        return print(f"Phone number '{email_to_delete}' wasn't found")
+                return print(f"{name_input} was not found in addressbook")
+            elif len(name_input) == 0:
+                print("Enter name of contact!")
+            elif len(email_to_delete) == 0:
+                print("No one email!")
+        except IndexError:
+            print(f"You didn't enter a value!")
+
+    def delete_address(self, text):
+        name_input = text.split(" ")[0].title()
+        address_to_delete = text.split(" ")[1]
+        if len(name_input) >= 1 and len(address_to_delete) >= 1:
+            for key, value in self.data.items():
+                if key == name_input:
+                    list_of_addresses = list(i.value.lower() for i in self.data[name_input].addresses)
+                    for address in list_of_addresses:
+                        if address == address_to_delete:
+                            index = list_of_addresses.index(address)
+                            del self.data[name_input].addresses[index]
+                            return
+                    return print(f"Address '{address_to_delete}' wasn't found")
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(address_to_delete) == 0:
+            print("No one address!")
+
+    def delete_birthday(self, text):
+        name_input = text.split(" ")[0].title()
+        birthday_to_delete = text.split(" ")[1]
+        if len(name_input) >= 1 and len(birthday_to_delete) >= 1:
+            for key, value in self.data.items():
+                if key == name_input:
+                    self.data[name_input].birthday = None
+                    return
+            return print(f"{name_input} was not found in addressbook")
+        elif len(name_input) == 0:
+            print("Enter name of contact!")
+        elif len(birthday_to_delete) == 0:
+            print("No one birthday!")
             
     def save_addressbook(self):
         with open("addressbook.bin", "wb") as f:
@@ -400,7 +566,12 @@ def main():
             "edit phone": lambda: contact_book.add_birthday_to_contact(text_after_command),
             "edit birthday": lambda: contact_book.add_birthday_to_contact(text_after_command),
             "edit email": lambda: contact_book.add_birthday_to_contact(text_after_command),
-            "delete contact": lambda: contact_book.add_birthday_to_contact(text_after_command),
+            "edit address": lambda: contact_book.edit_address(text_after_command),
+            "delete contact": lambda: contact_book.delete_contact(text_after_command),
+            "delete phone": lambda: contact_book.delete_phone(text_after_command),
+            "delete address": lambda: contact_book.delete_address(text_after_command),
+            "delete email": lambda: contact_book.delete_email(text_after_command),
+            "delete birthday": lambda: contact_book.delete_birthday(text_after_command),
             "show addressbook": lambda: contact_book.show_addressbook(),
             "show addressbooks": lambda: print(contact_book),
             "show birthdays": lambda: contact_book.add_birthday_to_contact(text_after_command),
