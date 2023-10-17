@@ -46,7 +46,6 @@ class Phone(Field):
     @value.setter
     def value(self, value):
         if re.match(r'^(\+380\d{9}|0\d{9})$', value):
-            print(value)
             self._value = value
         else:
             print("Incorrect phone number format, should be +380638108107 or 0638108107.")
@@ -67,9 +66,10 @@ class Email(Field):
 
     @value.setter
     def value(self, value):
-        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
+        if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
+            self._value = value
+        else:
             print("Invalid email format.")
-        self._value = value
 
 
 class Address(Field):
@@ -106,11 +106,14 @@ class Birthday(Field):
     @value.setter
     def value(self, value):
         # Валідація формату дати
-        try:
-            datetime.strptime(value, "%Y-%m-%d")
-        except ValueError:
-            print("Incorrect birthday format, should be YYYY-MM-DD.")
-        self._value = value
+        if re.match(r"\d{2}\.\d{2}\.\d{4}$", value):
+            try:
+                datetime.strptime(value, "%d.%m.%Y")
+                self._value = value
+            except ValueError:
+                print("Incorrect birthday format, should be DD-MM-YYYY.")
+        else:
+            print("Incorrect birthday format, should be DD-MM-YYYY.")
 
 
 class Record:
@@ -169,7 +172,6 @@ class AddressBook(UserDict):
                 if key == name_input:
                     if phone_to_add not in list(i.value.lower() for i in self.data[name_input].phones):
                         phone_to_add_new = Phone(phone_to_add)
-                        print(phone_to_add_new.value)
                         if phone_to_add_new.value is not None:
                             return self.data[name_input].phones.append(phone_to_add_new)
                         else:
@@ -191,7 +193,11 @@ class AddressBook(UserDict):
             for key, value in self.data.items():
                 if key == name_input:
                     if email_to_add not in list(i.value.lower() for i in self.data[name_input].emails):
-                        return self.data[name_input].emails.append(Email(email_to_add))
+                        email_to_add_new = Email(email_to_add)
+                        if email_to_add_new.value is not None:
+                            return self.data[name_input].emails.append(email_to_add_new)
+                        else:
+                            return
                     else:
                         return print(f"This email is already entered for this addressbook!")
             return print(f"{name_input} was not found in addressbook")
@@ -226,11 +232,12 @@ class AddressBook(UserDict):
         if len(name_input) >= 2 and len(birthday_to_add) >= 10:
             for key, value in self.data.items():
                 if key == name_input:
-                    if self.data[name_input].birthday is None:
-                        self.data[name_input].birthday = Birthday(birthday_to_add)
+                    birthday_to_add_new = Birthday(birthday_to_add)
+                    if birthday_to_add_new.value is not None:
+                        self.data[name_input].birthday = birthday_to_add_new
                         return
                     else:
-                        return print(f"Birthday for this contact is already set. Use 'edit' func")
+                        return
             return print(f"{name_input} was not found in addressbook")
         elif len(name_input) == 0:
             print("Enter name of contact!")
@@ -238,7 +245,9 @@ class AddressBook(UserDict):
             print("No birthday date!")
 
     def find_contact_by_name(self, contact_name):  # Пошук контакту
-        return self.data.get(contact_name)
+        for key, value in self.data.items():
+            if contact_name.title() == key:
+                return print(value)
 
     def search_matches_in_addressbook(self, match):  # Шукаємо збіги в адресній книзі
         found_matches = []
@@ -254,12 +263,13 @@ class AddressBook(UserDict):
                 if contact not in found_matches:
                     found_matches.append(contact)
 
-            if match == contact.birthday.value:
-                print(f'Contact {name} has birthday {match}')
+            # if match == contact.birthday.value:
+            #     print(f'Contact {name} has birthday {match}')
 
         for contact in found_matches:
             print(f"{contact}")
 
+    @input_error
     def edit_phone(self, text):
         name_input = text.split(" ")[0].title()
         phone_old = text.split(" ")[1]
@@ -282,6 +292,7 @@ class AddressBook(UserDict):
         elif len(phone_new) == 0:
             print("No new phone number!")
 
+    @input_error
     def edit_email(self, text):
         name_input = text.split(" ")[0].title()
         email_old = text.split(" ")[1]
@@ -326,20 +337,6 @@ class AddressBook(UserDict):
             print("No one old address!")
         elif len(address_new) == 0:
             print("No one new address!")
-
-    def edit_birthday(self, text):
-        name_input = text.split(" ")[0].title()
-        birthday_new = text.split(" ")[1]
-        if len(name_input) >= 1 and len(birthday_new) >= 1:
-            for key, value in self.data.items():
-                if key == name_input:
-                    self.data[name_input].birthday.value = birthday_new
-                    return
-            return print(f"{name_input} was not found in addressbook")
-        elif len(name_input) == 0:
-            print("Enter name of contact!")
-        elif len(birthday_new) == 0:
-            print("No new birthday date!")
 
     def delete_contact(self, contact):
         if len(contact) >= 1:
@@ -436,7 +433,7 @@ class AddressBook(UserDict):
 
     def show_addressbook(self):
         for name, contact in self.data.items():
-            print(f"{name}: {contact}")
+            print(f"{contact}")
 
 
 class NoteBook(UserDict):
@@ -484,7 +481,6 @@ class NoteBook(UserDict):
         # Якщо після введеня імені нотатки не буде вказаний тег, функція поверне відповідне повідомлення.
         name_of_note = text.split(" ")[0]
         tag_to_add = text.removeprefix(name_of_note).strip()
-        print(tag_to_add)
         if len(name_of_note) >= 1 and len(tag_to_add) >= 1:
             for key, value in self.data.items():
                 if key == name_of_note:
@@ -579,7 +575,6 @@ def main():
             "add address": lambda: contact_book.add_address_to_contact(text_after_command),
             "add birthday": lambda: contact_book.add_birthday_to_contact(text_after_command),
             "edit phone": lambda: contact_book.edit_phone(text_after_command),
-            "edit birthday": lambda: contact_book.edit_birthday(text_after_command),
             "edit email": lambda: contact_book.edit_email(text_after_command),
             "edit address": lambda: contact_book.edit_address(text_after_command),
             "delete contact": lambda: contact_book.delete_contact(text_after_command),
@@ -588,7 +583,6 @@ def main():
             "delete email": lambda: contact_book.delete_email(text_after_command),
             "delete birthday": lambda: contact_book.delete_birthday(text_after_command),
             "show addressbook": lambda: contact_book.show_addressbook(),
-            "show addressbooks": lambda: print(contact_book),
             "show birthdays": lambda: contact_book.add_birthday_to_contact(text_after_command),
             "find contact": lambda: contact_book.find_contact_by_name(text_after_command),
             "find matches": lambda: contact_book.search_matches_in_addressbook(text_after_command),
@@ -602,8 +596,7 @@ def main():
             "save notebook": list_of_notes.save_notebook,
             "load notebook": lambda: list_of_notes.load_notebook(text_after_command),
             "show notebook": list_of_notes.show_notebook,
-            "show notebooks": lambda: print(list_of_notes)
-        }
+         }
     
     while True:
         commands = list(all_commands.keys())
