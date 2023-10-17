@@ -1,61 +1,98 @@
-# 4Group_project
+## 4Group_project
 
-Інструкція до програми "Персональний помічник"
+# Інструкція до програми "Персональний помічник"
 
-1. Призначення
+### 1. Призначення
+
 Персональний помічник побудований за принцип адресної книги та призначений для швидкої роботи з контактами користувача.
 Контактна книга має класичні поля: name, phone, email, address, birthday, note. Взаємодія користувача з книгою контактів відбувається
 шляхом використання коротких інтуітивних команд, наприклад: add, edit, delete, show. Таким чином данні можна зберігати, корегувати, 
-видаляти або просто відображати. 
+видаляти або просто відображати потрібну інформацію.
 
 
-2. Встановлення пакету
-Для роботи "Персонального помічника" необхідно встановити програмний пакет.
+### 2. Встановлення пакету
 
-3. Команди "Персонального помічника" 
+Для роботи "Персонального помічника" необхідно встановити програмний пакет. 
+Встановлення пакету відбувається через командну строку: pip instal -e
 
-3.1 Загальні команди
 
-"hello": Вітання. Інформує що керуючі команди доступні по команді 'info'
-"hi": Вітання. Інформує що керуючі команди доступні по команді 'info'            
-"good bye": Завершення роботи.
-"close": Завершення роботи.
-"exit": Завершення роботи.
-"info": Перелік команд
+### 3. Команди "Персонального помічника"
 
-3.2 Команди Адресної книги
 
-"save addressbook": Зберігає адресну книгу
-"load addressbook": Завантажує адресну книгу
-"add contact": Додати контакт
-"add phone": Додати телефон
-"add email": Додати адресу електронної пошти 
-"add address": Додати адресу  
-"add birthday": Додати дату народження
-"edit phone": Редагувати телефон
-"edit birthday": Редагувати день народження
-"edit email": Редагувати адресу електронної пошти 
-"edit address": Редагувати адресу  
-"delete contact": Видалити контакт
-"delete phone": Видалити номер телефону
-"delete address": Видалити адресу
-"delete email": Видалити адресу електронної пошти
-"delete birthday": Видалити дату народження
-"show addressbook": Відобразити адресну книгу                   ?????? 
-"show addressbooks": Відобразити адресні книги                  ?????? 
-"show birthdays": Відобразити дату народження
-"find contact": Знайти контакт
-"find matches": Знайти співпадіння
+####  3.1.Загальні команди
 
-3.3 Команди Книга Нотаток
+<button>"hello": Вітання. Інформує що керуючі команди доступні по команді 'info'</button>
 
-"add note": Додати нотатку
-"add tag": Додати тег
-"delete note": Видалити нотатку
-"edit note": Редагувати нотатку
-"search note": Шукати нотатку
-"search tag": Шукати тег 
-"save notebook": Зберегти нотатки
-"load notebook": Завантажити нотатки
-"show notebook": Відобразити нотатку
-"show notebooks": Відобразити нотатки
+<button>"hi": Вітання. Інформує що керуючі команди доступні по команді 'info'</button>
+
+<button>"good bye": Завершення роботи.</button>
+
+<button>"close": Завершення роботи.</button>
+
+<button>"exit": Завершення роботи.</button>
+
+<button>"info": Перелік команд</button>
+
+
+####    3.2 Команди Адресної книги
+
+<button>"save addressbook": Зберігає адресну книгу</button>
+
+<button>"load addressbook": Завантажує адресну книгу</button>
+
+<button>"add contact": Додати контакт</button>
+
+<button>"add phone": Додати телефон</button>
+
+<button>"add email": Додати адресу електронної пошти</button>
+
+<button>"add address": Додати адресу</button>
+
+<button>"add birthday": Додати дату народження. Формат вводу add birthday 'name' xx.xx.xxxx</button>
+
+<button>"edit phone": Редагувати телефон. Формат вводу edit phone 'name' old_phone new_phone</button>
+
+<button>"edit email": Редагувати адресу електронної пошти</button>
+
+<button>"edit address": Редагувати адресу</button>
+
+<button>"delete contact": Видалити контакт</button>
+
+<button>"delete phone": Видалити номер телефону</button>
+
+<button>"delete address": Видалити адресу</button>
+
+<button>"delete email": Видалити адресу електронної пошти</button>
+
+<button>"delete birthday": Видалити дату народження</button>
+
+<button>"show addressbook": Відобразити адресну книгу</button>                
+
+<button>"show birthdays": Відобразити дату народження</button>
+
+<button>"find contact": Знайти контакт</button>
+
+<button>"find matches": Знайти співпадіння</button>
+
+
+####    3.3 Команди Книги Нотаток
+
+<button>"add note": Додати нотатку</button>
+
+<button>"add tag": Додати тег</button>
+
+<button>"delete note": Видалити нотатку</button>
+
+<button>"edit note": Редагувати нотатку</button>
+
+<button>"search note": Шукати нотатку</button>
+
+<button>"search tag": Шукати тег</button>
+
+<button>"save notebook": Зберегти нотатки</button>
+
+<button>"load notebook": Завантажити нотатки</button>
+
+<button>"show notebook": Відобразити нотатку</button>
+
+<button>"show notebooks": Відобразити нотатки</button>
