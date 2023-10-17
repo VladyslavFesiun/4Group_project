@@ -15,12 +15,16 @@ class Field:
 class Name(Field):
     # Ініціалізація об'єкта Name
     def __init__(self, value):
-        super().__init__(value)
         self._value = value
+        super().__init__(value)
 
     @property
     def value(self):
         return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
 
     def __str__(self):
         return str(self._value)
@@ -29,8 +33,8 @@ class Name(Field):
 class Phone(Field):
     # Ініціалізація об'єкта Phone
     def __init__(self, value):
-        super().__init__(value)
         self._value = None
+        super().__init__(value)
 
     def __str__(self):
         return str(self._value)
@@ -41,17 +45,18 @@ class Phone(Field):
 
     @value.setter
     def value(self, value):
-        if not re.match(r'^(\+380\d{9}|0\d{9})$', value):
-            print("Incorrect phone number format, should be +380638108107 or 0638108107.")
-        else:
+        if re.match(r'^(\+380\d{9}|0\d{9})$', value):
+            print(value)
             self._value = value
+        else:
+            print("Incorrect phone number format, should be +380638108107 or 0638108107.")
 
 
 class Email(Field):
     # Ініціалізація об'єкта Email
     def __init__(self, value):
-        super().__init__(value)
         self._value = None
+        super().__init__(value)
 
     def __str__(self):
         return str(self._value)
@@ -70,12 +75,16 @@ class Email(Field):
 class Address(Field):
     # Ініціалізація об'єкта Address
     def __init__(self, value):
-        super().__init__(value)
         self._value = value
+        super().__init__(value)
 
     @property
     def value(self):
         return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
 
     def __str__(self):
         return str(self._value)
@@ -84,8 +93,8 @@ class Address(Field):
 class Birthday(Field):
     # Ініціалізація об'єкта Birthday
     def __init__(self, value):
-        super().__init__(value)
         self._value = None
+        super().__init__(value)
 
     def __str__(self):
         return str(self._value)
@@ -146,6 +155,7 @@ class AddressBook(UserDict):
                 if key == name_input:
                     if phone_to_add not in list(i.value.lower() for i in self.data[name_input].phones):
                         phone_to_add_new = Phone(phone_to_add)
+                        print(phone_to_add_new.value)
                         if phone_to_add_new.value is not None:
                             return self.data[name_input].phones.append(phone_to_add_new)
                         else:
