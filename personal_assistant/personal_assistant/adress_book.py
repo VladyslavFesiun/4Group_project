@@ -128,8 +128,11 @@ class Record:
         emails_str = '; '.join(str(e) for e in self.emails)
         addresses_str = '; '.join(str(a) for a in self.addresses)
 
-        return f"Contact name: {self.name.value}, phones: {phones_str}, " \
-               f"emails: {emails_str}, addresses: {addresses_str}, birthday: {self.birthday}"
+        return f"Contact name: {self.name.value}" + \
+            (f", phones: {phones_str}" if len(phones_str) > 0 else "") + \
+            (f", emails: {emails_str}" if len(emails_str) > 0 else "") + \
+            (f", addresses: {addresses_str}" if len(addresses_str) > 0 else "") + \
+            (f", birthday: {self.birthday}" if self.birthday is not None else "")
 
 
 def input_error(func):
