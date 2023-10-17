@@ -138,6 +138,8 @@ def input_error(func):
             return func(*args, **kwargs)
         except(KeyError, ValueError, IndexError):
             print("Invalid input. Please try again")
+        except FileNotFoundError:
+            print("File isn't found. Specify the file.")
     return wrapper
 
 
@@ -426,6 +428,7 @@ class AddressBook(UserDict):
         with open("addressbook.bin", "wb") as f:
             pickle.dump(self.data, f)
 
+    @input_error
     def load_notebook(self, file):
         with open(file, "rb") as f:
             self.data = pickle.load(f)
@@ -520,7 +523,8 @@ class NoteBook(UserDict):
     def save_notebook(self):
         with open("notebook.bin", "wb") as f:
             pickle.dump((self.data, self.__id), f)
-
+    
+    @input_error
     def load_notebook(self, file):
         with open(file, "rb") as f:
             info_from_file = pickle.load(f)
