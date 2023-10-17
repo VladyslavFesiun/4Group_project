@@ -130,18 +130,19 @@ class Record:
 
         return f"Contact name: {self.name.value}, phones: {phones_str}, " \
                f"emails: {emails_str}, addresses: {addresses_str}, birthday: {self.birthday}"
-    
+
+
 def input_error(func):
-        def wrapper(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except(KeyError, ValueError, IndexError):
-                print("Invalid input. Please try again")
-        return wrapper
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except(KeyError, ValueError, IndexError):
+            print("Invalid input. Please try again")
+    return wrapper
+
 
 class AddressBook(UserDict):
     
-
     def add_contact(self, text):
         # Додавання контакту
         if len(text) >= 2:
@@ -297,7 +298,6 @@ class AddressBook(UserDict):
             print("No old email!")
         elif len(email_new) == 0:
             print("No new email!")
-
 
     @input_error
     def edit_address(self, text):
@@ -573,9 +573,9 @@ def main():
             "add email": lambda: contact_book.add_email_to_contact(text_after_command),
             "add address": lambda: contact_book.add_address_to_contact(text_after_command),
             "add birthday": lambda: contact_book.add_birthday_to_contact(text_after_command),
-            "edit phone": lambda: contact_book.add_birthday_to_contact(text_after_command),
-            "edit birthday": lambda: contact_book.add_birthday_to_contact(text_after_command),
-            "edit email": lambda: contact_book.add_birthday_to_contact(text_after_command),
+            "edit phone": lambda: contact_book.edit_phone(text_after_command),
+            "edit birthday": lambda: contact_book.edit_birthday(text_after_command),
+            "edit email": lambda: contact_book.edit_email(text_after_command),
             "edit address": lambda: contact_book.edit_address(text_after_command),
             "delete contact": lambda: contact_book.delete_contact(text_after_command),
             "delete phone": lambda: contact_book.delete_phone(text_after_command),
