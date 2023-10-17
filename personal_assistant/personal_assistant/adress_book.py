@@ -9,35 +9,37 @@ from prompt_toolkit.completion import WordCompleter
 
 class Field:
     def __init__(self, value):
-        self._value = value
-    
-    @property
-    def value(self):
-        return self._value
-    
-    @value.setter
-    def value(self, new_value):
-        self._value = new_value 
+        self.value = value
 
 
 class Name(Field):
     # Ініціалізація об'єкта Name
     def __init__(self, value):
         super().__init__(value)
+        self._value = value
+
+    @property
+    def value(self):
+        return self._value
 
     def __str__(self):
-        return str(self.value)
+        return str(self._value)
 
 
 class Phone(Field):
     # Ініціалізація об'єкта Phone
     def __init__(self, value):
         super().__init__(value)
+        self._value = None
 
     def __str__(self):
-        return str(self.value)
+        return str(self._value)
 
-    @Field.value.setter
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
     def value(self, value):
         if not re.match(r'^(\+380\d{9}|0\d{9})$', value):
             print("Incorrect phone number format, should be +380638108107 or 0638108107.")
@@ -49,11 +51,16 @@ class Email(Field):
     # Ініціалізація об'єкта Email
     def __init__(self, value):
         super().__init__(value)
+        self._value = None
 
     def __str__(self):
-        return str(self.value)
+        return str(self._value)
 
-    @Field.value.setter
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
     def value(self, value):
         if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
             print("Invalid email format.")
@@ -64,20 +71,30 @@ class Address(Field):
     # Ініціалізація об'єкта Address
     def __init__(self, value):
         super().__init__(value)
+        self._value = value
+
+    @property
+    def value(self):
+        return self._value
 
     def __str__(self):
-        return str(self.value)
+        return str(self._value)
 
 
 class Birthday(Field):
     # Ініціалізація об'єкта Birthday
     def __init__(self, value):
         super().__init__(value)
+        self._value = None
 
     def __str__(self):
-        return str(self.value)
-    
-    @Field.value.setter
+        return str(self._value)
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
     def value(self, value):
         # Валідація формату дати
         try:
@@ -89,12 +106,12 @@ class Birthday(Field):
 
 class Record:
     
-    def __init__(self, name, birthday=None):
+    def __init__(self, name):
         self.name = Name(name)
         self.phones = []
         self.emails = []
         self.addresses = []
-        self.birthday = Birthday(birthday)
+        self.birthday = None
 
     def __str__(self):
         # Перетворення об'єкта контакту в рядок
@@ -127,10 +144,12 @@ class AddressBook(UserDict):
         if len(name_input) >= 2 and len(phone_to_add) >= 1:
             for key, value in self.data.items():
                 if key == name_input:
-                    phone_to_add_new = Phone(phone_to_add)
-                    phone_to_add_new.value = phone_to_add
-                    if phone_to_add_new.value not in list(i.value.lower() for i in self.data[name_input].phones):
-                        return self.data[name_input].phones.append(Phone(phone_to_add_new.value))
+                    if phone_to_add not in list(i.value.lower() for i in self.data[name_input].phones):
+                        phone_to_add_new = Phone(phone_to_add)
+                        if phone_to_add_new.value is not None:
+                            return self.data[name_input].phones.append(phone_to_add_new)
+                        else:
+                            return
                     else:
                         return print(f"This phone is already entered for this addressbook!")
             return print(f"{name_input} was not found in addressbook")
