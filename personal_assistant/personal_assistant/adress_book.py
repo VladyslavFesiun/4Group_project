@@ -1,5 +1,5 @@
 from collections import UserDict
-from datetime import datetime
+from datetime import datetime, timedelta
 import pickle
 import re
 import difflib
@@ -123,7 +123,7 @@ class Record:
         self.phones = []
         self.emails = []
         self.addresses = []
-        self.birthday = None
+        self.birthday = ''
 
     def __str__(self):
         # Перетворення об'єкта контакту в рядок
@@ -195,6 +195,7 @@ class AddressBook(UserDict):
                     if email_to_add not in list(i.value.lower() for i in self.data[name_input].emails):
                         email_to_add_new = Email(email_to_add)
                         if email_to_add_new.value is not None:
+                            print(f'Email for {name_input} is added!')
                             return self.data[name_input].emails.append(email_to_add_new)
                         else:
                             return
@@ -215,6 +216,7 @@ class AddressBook(UserDict):
             for key, value in self.data.items():
                 if key == name_input:
                     if address_to_add not in list(i.value.lower() for i in self.data[name_input].addresses):
+                        print(f'Address for {name_input} is added!')
                         return self.data[name_input].addresses.append(Address(address_to_add))
                     else:
                         return print(f"This address is already entered for this addressbook!")
@@ -235,6 +237,7 @@ class AddressBook(UserDict):
                     birthday_to_add_new = Birthday(birthday_to_add)
                     if birthday_to_add_new.value is not None:
                         self.data[name_input].birthday = birthday_to_add_new
+                        print(f'Birthday for {name_input} is added!')
                         return
                     else:
                         return
@@ -243,6 +246,20 @@ class AddressBook(UserDict):
             print("Enter name of contact!")
         elif len(birthday_to_add) == 0:
             print("No birthday date!")
+
+    def birthday_in(self, days):
+        result = []
+        date_to_search = datetime.now().date() + timedelta(days=int(days))
+        current_year = date_to_search.year
+        date_to_search = date_to_search.strftime("%d.%m.%Y")
+        for record in self.data.values():
+            edited_birthday = datetime.strptime(record.birthday.value, "%d.%m.%Y")\
+                                      .replace(year=current_year).date().strftime("%d.%m.%Y")
+            if edited_birthday == date_to_search:
+                result.append(record)
+
+        for contact in result:
+            print(contact)
 
     def find_contact_by_name(self, contact_name):  # Пошук контакту
         for key, value in self.data.items():
@@ -259,12 +276,10 @@ class AddressBook(UserDict):
 
             if any(match in phone for phone in list_of_phones)\
                     or any(match in email for email in list_of_emails)\
-                    or any(match in address for address in list_of_addresses):
+                    or any(match in address for address in list_of_addresses)\
+                    or match in contact.birthday.value:
                 if contact not in found_matches:
                     found_matches.append(contact)
-
-            # if match == contact.birthday.value:
-            #     print(f'Contact {name} has birthday {match}')
 
         for contact in found_matches:
             print(f"{contact}")
@@ -282,6 +297,7 @@ class AddressBook(UserDict):
                         if phone == phone_old:
                             index = list_of_phones.index(phone)
                             self.data[name_input].phones[index].value = phone_new
+                            print(f'Phone for {name_input} is edited!')
                             return
                     return print(f"Phone number '{phone_old}' wasn't found")
             return print(f"{name_input} was not found in addressbook")
@@ -305,6 +321,7 @@ class AddressBook(UserDict):
                         if email == email_old:
                             index = list_of_emails.index(email)
                             self.data[name_input].emails[index].value = email_new
+                            print(f'Email for {name_input} is edited!')
                             return
                     return print(f"Email '{email_old}' wasn't found")
             return print(f"{name_input} was not found in addressbook")
@@ -331,6 +348,7 @@ class AddressBook(UserDict):
                         if address == address_old:
                             index = list_of_addresses.index(address)
                             self.data[name_input].addresses[index].value = address_new
+                            print(f'Address for {name_input} is edited!')
                             return
                     return print(f"Address '{address_old}' wasn't found")
             return print(f"{name_input} was not found in addressbook")
@@ -345,7 +363,7 @@ class AddressBook(UserDict):
         if len(contact) >= 1:
             for key, value in self.data.items():
                 if key == contact.title():
-                    print(f'User {key} has been deleted from the AddresBook')
+                    print(f'User {key} has been deleted from the AddressBook')
                     return self.data.pop(contact.title())
             return print(f"{contact} was not found in AddressBook")
         else:
@@ -363,6 +381,7 @@ class AddressBook(UserDict):
                             if phone == phone_to_delete:
                                 index = list_of_phones.index(phone)
                                 del self.data[name_input].phones[index]
+                                print(f'Phone for {name_input} is deleted!')
                                 return
                         return print(f"Phone number '{phone_to_delete}' wasn't found")
                 return print(f"{name_input} was not found in addressbook")
@@ -385,6 +404,7 @@ class AddressBook(UserDict):
                             if email == email_to_delete:
                                 index = list_of_emails.index(email)
                                 del self.data[name_input].emails[index]
+                                print(f'Email for {name_input} is deleted!')
                                 return
                         return print(f"Phone number '{email_to_delete}' wasn't found")
                 return print(f"{name_input} was not found in addressbook")
@@ -406,6 +426,7 @@ class AddressBook(UserDict):
                         if address == address_to_delete:
                             index = list_of_addresses.index(address)
                             del self.data[name_input].addresses[index]
+                            print(f'Address for {name_input} is deleted!')
                             return
                     return print(f"Address '{address_to_delete}' wasn't found")
             return print(f"{name_input} was not found in addressbook")
@@ -420,6 +441,7 @@ class AddressBook(UserDict):
             for key, value in self.data.items():
                 if key == name_input:
                     self.data[name_input].birthday = None
+                    print(f'Birthday for {name_input} is deleted!')
                     return
             return print(f"{name_input} was not found in addressbook")
         elif len(name_input) == 0:
@@ -428,6 +450,7 @@ class AddressBook(UserDict):
     def save_addressbook(self):
         with open("addressbook.bin", "wb") as f:
             pickle.dump(self.data, f)
+            print(f'AddressBook saved!')
 
     @input_error
     def load_notebook(self, file):
@@ -449,6 +472,7 @@ class NoteBook(UserDict):
         # Додавання нотатки в записник
         if len(notes) >= 1:
             self.data[f"note-{self.__id}"] = Notes(notes)
+            print(f'Note is added with title note-{self.__id}')
             self.__id += 1
         else:
             print("Note is empty!")
@@ -488,6 +512,7 @@ class NoteBook(UserDict):
             for key, value in self.data.items():
                 if key == name_of_note:
                     if tag_to_add not in self.data[name_of_note].tags:
+                        print(f'Tag for {key} is added')
                         return self.data[name_of_note].tags.append(tag_to_add)
                     else:
                         print(f"This tag is already entered for this note!")
@@ -523,6 +548,7 @@ class NoteBook(UserDict):
     def save_notebook(self):
         with open("notebook.bin", "wb") as f:
             pickle.dump((self.data, self.__id), f)
+            print("NoteBook saved")
     
     @input_error
     def load_notebook(self, file):
@@ -586,7 +612,7 @@ def main():
             "delete email": lambda: contact_book.delete_email(text_after_command),
             "delete birthday": lambda: contact_book.delete_birthday(text_after_command),
             "show addressbook": lambda: contact_book.show_addressbook(),
-            "show birthdays": lambda: contact_book.add_birthday_to_contact(text_after_command),
+            "birthdays in": lambda: contact_book.birthday_in(text_after_command),
             "find contact": lambda: contact_book.find_contact_by_name(text_after_command),
             "find matches": lambda: contact_book.search_matches_in_addressbook(text_after_command),
             # NoteBook commands
