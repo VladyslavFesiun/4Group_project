@@ -318,8 +318,11 @@ class AddressBook(UserDict):
     @input_error
     def edit_address(self, text):
         name_input = text.split(" ")[0].title()
-        address_old = text.split(" ")[1]
-        address_new = text.split(" ")[2]
+        print(name_input)
+        address_old = text.removeprefix(name_input.lower()+' ').split(" -")[0]
+        print(address_old)
+        address_new = text.split("- ")[1]
+        print(address_new)
         if len(name_input) >= 2 and len(address_old) >= 5 and len(address_new) >= 5:
             for key, value in self.data.items():
                 if key == name_input:
