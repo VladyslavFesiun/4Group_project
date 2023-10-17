@@ -6,6 +6,7 @@ import difflib
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 
+
 class Field:
     def __init__(self, value):
         self._value = value
@@ -22,7 +23,7 @@ class Field:
 class Name(Field):
     # Ініціалізація об'єкта Name
     def __init__(self, value):
-       super().__init__(value)
+        super().__init__(value)
 
     def __str__(self):
         return str(self.value)
@@ -36,13 +37,13 @@ class Phone(Field):
     def __str__(self):
         return str(self.value)
 
-     
     @Field.value.setter
     def value(self, value):
         if not re.match(r'^(\+380\d{9}|0\d{9})$', value):
             print("Incorrect phone number format, should be +380638108107 or 0638108107.")
         else:
             self._value = value
+
 
 class Email(Field):
     # Ініціалізація об'єкта Email
@@ -85,6 +86,7 @@ class Birthday(Field):
             print("Incorrect birthday format, should be YYYY-MM-DD.")
         self._value = value
 
+
 class Record:
     
     def __init__(self, name, birthday=None):
@@ -93,22 +95,6 @@ class Record:
         self.emails = []
         self.addresses = []
         self.birthday = Birthday(birthday)
-
-    def add_phone(self, phone):
-        # Додавання телефону до контакту
-        self.phones.append(Phone(phone))
-
-    def add_email(self, email):
-        # Додавання електронної адреси до контакту
-        self.emails.append(Email(email))
-
-    def add_address(self, address):
-        # Додавання адреси до контакту
-        self.addresses.append(Address(address))
-
-    def add_birthday(self, birthday):
-        # Додавання дня народження до контакту
-        self.birthday = birthday
 
     def __str__(self):
         # Перетворення об'єкта контакту в рядок
@@ -123,7 +109,7 @@ class Record:
 class AddressBook(UserDict):
 
     def add_contact(self, text):
-       # Додавання контакту
+        # Додавання контакту
         if len(text) >= 2:
             new_contact = Record(text.title())
             if new_contact.name.value not in list(self.data.keys()):
@@ -152,7 +138,6 @@ class AddressBook(UserDict):
             print("Enter name of contact!")
         elif len(phone_to_add) == 0:
             print("No phone number!")
-
 
     def add_email_to_contact(self, text):
         # Звернення йде шляхом вводу імені контакту і мейлу
@@ -209,10 +194,10 @@ class AddressBook(UserDict):
         elif len(birthday_to_add) == 0:
             print("No birthday date!")
 
-    def find_contact_by_name(self, contact_name): # Пошук контакту
+    def find_contact_by_name(self, contact_name):  # Пошук контакту
         return self.data.get(contact_name)
 
-    def search_matches_in_addressbook(self, match): # Шукаємо збіги в адресній книзі
+    def search_matches_in_addressbook(self, match):  # Шукаємо збіги в адресній книзі
         found_matches = []
 
         for name, contact in self.data.items():
@@ -266,7 +251,7 @@ class NoteBook(UserDict):
             for value in self.data.values():
                 # print(type(str(value)))
                 # print(str(value))
-                if (search_match in str(value)):
+                if search_match in str(value):
                     res += str(value) + ""
                     print(f'Note "{res}" is found')
     
@@ -283,7 +268,6 @@ class NoteBook(UserDict):
                 print(f"{name}: {note}")
         else:
             print("No notes found for the tag.")
-        print
         return found_notes
 
     def add_tag(self, text):
@@ -342,7 +326,8 @@ class NoteBook(UserDict):
         for name, note in self.data.items():
             print(f"{name}: {note}")
 
-class Notes():
+
+class Notes:
     def __init__(self, note):
         self.note = note
         self.tags = []
@@ -398,7 +383,7 @@ def main():
             "delete note": lambda: list_of_notes.delete_note(text_after_command),
             "edit note": lambda: list_of_notes.edit_note(text_after_command),
             "search note": lambda: list_of_notes.search_notes(text_after_command),
-            "search tag":lambda: list_of_notes.search_notes_by_tag(text_after_command),
+            "search tag": lambda: list_of_notes.search_notes_by_tag(text_after_command),
             "save notebook": list_of_notes.save_notebook,
             "load notebook": lambda: list_of_notes.load_notebook(text_after_command),
             "show notebook": list_of_notes.show_notebook,
