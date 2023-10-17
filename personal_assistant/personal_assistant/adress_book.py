@@ -39,11 +39,10 @@ class Phone(Field):
      
     @Field.value.setter
     def value(self, value):
-        if not re.match(r'^\+\d{12}$', value):
-            raise ValueError("Incorrect phone number format, should be +380638108107.")
-        if not value.isnumeric():
-            raise ValueError('Invalid phone number format.')
-        self._value = value
+        if not re.match(r'^(\+380\d{9}|0\d{9})$', value):
+            print("Incorrect phone number format, should be +380638108107 or 0638108107.")
+        else:
+            self._value = value
 
 class Email(Field):
     # Ініціалізація об'єкта Email
@@ -56,7 +55,7 @@ class Email(Field):
     @Field.value.setter
     def value(self, value):
         if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
-            raise ValueError("Invalid email format.")
+            print("Invalid email format.")
         self._value = value
 
 
@@ -83,7 +82,7 @@ class Birthday(Field):
         try:
             datetime.strptime(value, "%Y-%m-%d")
         except ValueError:
-            raise ValueError("Incorrect birthday format, should be YYYY-MM-DD.")
+            print("Incorrect birthday format, should be YYYY-MM-DD.")
         self._value = value
 
 class Record:
@@ -142,8 +141,10 @@ class AddressBook(UserDict):
         if len(name_input) >= 2 and len(phone_to_add) >= 1:
             for key, value in self.data.items():
                 if key == name_input:
+                    phone_to_add_new = Phone(phone_to_add)
+                    phone_to_add_new.value = phone_to_add
                     if phone_to_add not in list(i.value.lower() for i in self.data[name_input].phones):
-                        return self.data[name_input].phones.append(Phone(phone_to_add))
+                        return self.data[name_input].phones.append(Phone(phone_to_add_new.value))
                     else:
                         return print(f"This phone is already entered for this addressbook!")
             return print(f"{name_input} was not found in addressbook")
@@ -274,6 +275,8 @@ class NoteBook(UserDict):
         for name, note in self.data.items():
             if tag in note.tags:
                 found_notes.append((name, note))
+
+        found_notes = sorted(found_notes, key=lambda x: x[1].note.split()[0].lower())
         if found_notes:
             print("Notes found:")
             for name, note in found_notes:
