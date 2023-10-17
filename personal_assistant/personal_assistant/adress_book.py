@@ -416,8 +416,7 @@ class AddressBook(UserDict):
 
     def delete_birthday(self, text):
         name_input = text.split(" ")[0].title()
-        birthday_to_delete = text.split(" ")[1]
-        if len(name_input) >= 1 and len(birthday_to_delete) >= 1:
+        if len(name_input) >= 1:
             for key, value in self.data.items():
                 if key == name_input:
                     self.data[name_input].birthday = None
@@ -425,8 +424,6 @@ class AddressBook(UserDict):
             return print(f"{name_input} was not found in addressbook")
         elif len(name_input) == 0:
             print("Enter name of contact!")
-        elif len(birthday_to_delete) == 0:
-            print("No one birthday!")
             
     def save_addressbook(self):
         with open("addressbook.bin", "wb") as f:
