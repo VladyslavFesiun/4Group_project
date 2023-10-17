@@ -130,9 +130,17 @@ class Record:
 
         return f"Contact name: {self.name.value}, phones: {phones_str}, " \
                f"emails: {emails_str}, addresses: {addresses_str}, birthday: {self.birthday}"
-
+    
+def input_error(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except(KeyError, ValueError, IndexError):
+                print("Invalid input. Please try again")
+        return wrapper
 
 class AddressBook(UserDict):
+    
 
     def add_contact(self, text):
         # Додавання контакту
@@ -290,6 +298,8 @@ class AddressBook(UserDict):
         elif len(email_new) == 0:
             print("No new email!")
 
+
+    @input_error
     def edit_address(self, text):
         name_input = text.split(" ")[0].title()
         address_old = text.split(" ")[1]
