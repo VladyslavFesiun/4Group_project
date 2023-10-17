@@ -345,6 +345,7 @@ class AddressBook(UserDict):
         if len(contact) >= 1:
             for key, value in self.data.items():
                 if key == contact.title():
+                    print(f'User {key} has been deleted from the AddresBook')
                     return self.data.pop(contact.title())
             return print(f"{contact} was not found in AddressBook")
         else:
