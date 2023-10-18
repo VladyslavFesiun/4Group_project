@@ -133,9 +133,9 @@ def get_folder_objects(root_path):
 
 
 def sort_files():
-    path = sys.argv[1]
+    path = Path.cwd()
     print(f"Start in {path}")
-    folder_path = Path(path)
+    folder_path = Path.cwd()
 
     scan(folder_path)
 

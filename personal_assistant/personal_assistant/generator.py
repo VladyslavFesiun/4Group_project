@@ -60,11 +60,12 @@ def exist_parent_folder(path):
     path.mkdir(parents=True, exist_ok=True)
 
 
-def file_generator(path):
+def file_generator():
+    path = Path.cwd()
     exist_parent_folder(path)
     generate_folder_forest(path)
     parse_folder_recursion(path)
 
 
 if __name__ == '__main__':
-    file_generator(Path("Temp"))
+    file_generator()

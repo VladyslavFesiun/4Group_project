@@ -454,8 +454,7 @@ class AddressBook(UserDict):
             pickle.dump(self.data, f)
             print(f'AddressBook saved!')
 
-    @input_error
-    def load_notebook(self, file):
+    def load_addressbook(self, file):
         with open(file, "rb") as f:
             self.data = pickle.load(f)
 
@@ -551,8 +550,7 @@ class NoteBook(UserDict):
         with open("notebook.bin", "wb") as f:
             pickle.dump((self.data, self.__id), f)
             print("NoteBook saved")
-    
-    @input_error
+
     def load_notebook(self, file):
         with open(file, "rb") as f:
             info_from_file = pickle.load(f)
@@ -579,7 +577,7 @@ class Notes:
 def main():
     try:
         contact_book = AddressBook()
-        contact_book.load_notebook("addressbook.bin")
+        contact_book.load_addressbook("addressbook.bin")
     except FileNotFoundError:
         contact_book = AddressBook()
 
@@ -599,7 +597,7 @@ def main():
             "info": lambda: print(''.join(f"Command list:"), [key for key in all_commands]),
             # AddressBook commands
             "save addressbook": contact_book.save_addressbook,
-            "load addressbook": lambda: contact_book.load_notebook(text_after_command),
+            "load addressbook": lambda: contact_book.load_addressbook(text_after_command),
             "add contact": lambda: contact_book.add_contact(text_after_command),
             "add phone": lambda: contact_book.add_phone_to_contact(text_after_command),
             "add email": lambda: contact_book.add_email_to_contact(text_after_command),
