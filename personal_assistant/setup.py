@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='personal_assistant',
-      version='0.0.1',
+      version='1.0.0',
       description='This package can create addressbook and notebook, '
                   'sort your files and generate temp folder with random files',
       author='4Group',
