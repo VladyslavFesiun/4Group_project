@@ -48,7 +48,7 @@ class Phone(Field):
         if re.match(r'^(\+380\d{9}|0\d{9})$', value):
             self._value = value
         else:
-            print("Incorrect phone number format, should be +380638108107 or 0638108107.")
+            print("Incorrect phone number format, should be +380638108709 or 0638708106.")
 
 
 class Email(Field):
@@ -111,9 +111,9 @@ class Birthday(Field):
                 datetime.strptime(value, "%d.%m.%Y")
                 self._value = value
             except ValueError:
-                print("Incorrect birthday format, should be DD-MM-YYYY.")
+                print("Incorrect birthday format, should be DD.MM.YYYY.")
         else:
-            print("Incorrect birthday format, should be DD-MM-YYYY.")
+            print("Incorrect birthday format, should be DD.MM.YYYY.")
 
 
 class Record:
@@ -231,7 +231,7 @@ class AddressBook(UserDict):
         # Якщо після введеня імені не буде вказаний день народження то вийде відповідне повідомлення.
         name_input = text.split(" ")[0].title()
         birthday_to_add = text.removeprefix(name_input.lower()).strip()
-        if len(name_input) >= 2 and len(birthday_to_add) >= 10:
+        if len(name_input) >= 2 and len(birthday_to_add) == 10:
             for key, value in self.data.items():
                 if key == name_input:
                     birthday_to_add_new = Birthday(birthday_to_add)
@@ -246,6 +246,8 @@ class AddressBook(UserDict):
             print("Enter name of contact!")
         elif len(birthday_to_add) == 0:
             print("No birthday date!")
+        else:
+            print("Incorrect birthday format, should be DD.MM.YYYY.")
 
     def birthday_in(self, days):
         result = []
