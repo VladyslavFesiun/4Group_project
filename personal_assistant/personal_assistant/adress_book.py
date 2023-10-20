@@ -135,7 +135,7 @@ class Record:
             (f", phones: {phones_str}" if len(phones_str) > 0 else "") + \
             (f", emails: {emails_str}" if len(emails_str) > 0 else "") + \
             (f", addresses: {addresses_str}" if len(addresses_str) > 0 else "") + \
-            (f", birthday: {self.birthday}" if self.birthday is not None else "")
+            (f", birthday: {self.birthday}" if self.birthday != '' else "")
 
 
 def input_error(func):
@@ -257,10 +257,13 @@ class AddressBook(UserDict):
         current_year = date_to_search.year
         date_to_search = date_to_search.strftime("%d.%m.%Y")
         for record in self.data.values():
-            edited_birthday = datetime.strptime(record.birthday.value, "%d.%m.%Y")\
-                                      .replace(year=current_year).date().strftime("%d.%m.%Y")
-            if edited_birthday == date_to_search:
-                result.append(record)
+            if record.birthday == '':
+                continue
+            else:
+                edited_birthday = datetime.strptime(record.birthday.value, "%d.%m.%Y")\
+                                        .replace(year=current_year).date().strftime("%d.%m.%Y")
+                if edited_birthday == date_to_search:
+                    result.append(record)
 
         for contact in result:
             print(contact)
