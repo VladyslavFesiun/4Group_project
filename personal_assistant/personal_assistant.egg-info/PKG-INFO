@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: personal-assistant
+Version: 1.0.0
+Summary: This package can create addressbook and notebook, sort your files and generate temp folder with random files
+Author: 4Group
+License: MIT
+Requires-Dist: numpy
+Requires-Dist: Pillow
+Requires-Dist: prompt_toolkit
