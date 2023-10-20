@@ -487,12 +487,12 @@ class NoteBook(UserDict):
         if len(search_match) >= 1:
             # print(self.data['note-1'])
             res = ""
-            for value in self.data.values():
+            for key, value in self.data.items():
                 # print(type(str(value)))
                 # print(str(value))
                 if search_match in str(value):
                     res += str(value) + " "
-                    print(f'Note "{search_match}" in "{(str(value).split(" ")[0][0].upper() + str(value).split(" ")[0][1:] + str(value)[len(str(value).split(" ")[0]):])}" was found')
+                    print(f'Note "{search_match}" in {key} "{(str(value).split(" ")[0][0].upper() + str(value).split(" ")[0][1:] + str(value)[len(str(value).split(" ")[0]):])}" was found')
     
     def search_notes_by_tag(self, tag):
         found_notes = []

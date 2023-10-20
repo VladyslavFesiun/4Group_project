@@ -1,4 +1,0 @@
-[console_scripts]
-clean-folder = personal_assistant.sorter:sort_files
-create-books = personal_assistant.adress_book:main
-fill-files = personal_assistant.generator:file_generator
